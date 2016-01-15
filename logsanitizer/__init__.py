@@ -148,7 +148,6 @@ def get_dialect(dialects, line):
             if not obj.is_production(): continue
             return obj
         except Exception as e:
-            # print e
             continue
 
 # Dialect
@@ -181,7 +180,7 @@ def main():
 
     # Load supported dialect's configurations.
     yaml.add_constructor('!regexp', lambda l, n: l.construct_scalar(n))
-    dialects = map(make_dialect, args.config)
+    dialects = list(map(make_dialect, args.config))
 
     # Create a CSV writer.
     writer = csv.writer(args.output, delimiter=args.separator)
