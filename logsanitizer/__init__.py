@@ -13,6 +13,9 @@ import types
 # True if we are running on Python 3.
 PY3 = sys.version_info[0] == 3
 
+# Add !regexp as a known Yaml dialect.
+yaml.add_constructor('!regexp', lambda l, n: l.construct_scalar(n))
+
 if PY3: # pragma: no cover
     text_type = str
     binary_type = bytes
@@ -148,6 +151,25 @@ def get_dialect(dialects, line):
             # print e
             continue
 
+# Dialect
+def make_dialect(file_pointer):
+    return Dialect(yaml.load(file_pointer))
+
+# Line
+def classify_line(dialects, line):
+    # Detect the first valid dialect
+    obj = get_dialect(dialects, line)
+    if not obj:
+        return None
+
+    # Classify the record
+    try:
+        obj.classify()
+    except IgnoreLine as e:
+        return None
+
+    return obj
+
 def main():
     # Command Line Interface.
     parser = argparse.ArgumentParser()
@@ -159,7 +181,7 @@ def main():
 
     # Load supported dialect's configurations.
     yaml.add_constructor('!regexp', lambda l, n: l.construct_scalar(n))
-    dialects = [Dialect(cfg) for cfg in map(yaml.load, args.config)]
+    dialects = map(make_dialect, args.config)
 
     # Create a CSV writer.
     writer = csv.writer(args.output, delimiter=args.separator)
@@ -167,15 +189,8 @@ def main():
     # Iterate over the log file ...
     for line in args.file:
         # Detect the first valid dialect
-        obj = get_dialect(dialects, line)
-        if not obj:
-            continue
-
-        # Classify the record
-        try:
-            obj.classify()
-        except IgnoreLine as e:
-            continue
+        obj = classify_line(dialects, line)
+        if not obj: continue
 
         # Write out the final record
         writer.writerow(obj.get_row())
