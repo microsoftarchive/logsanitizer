@@ -84,7 +84,7 @@ class NginxLine(logsanitizer.Line):
 
 Now, you have to create a Yaml configuration file for this dialect. Let's call this file `nginx.yaml`. The main idea behind this separation was to keep the format fixed and the rules easily changeable.
 
-```
+```yaml
 # Header, please fill out these fields.
 dialect: nginx
 package: nginx.py
