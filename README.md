@@ -5,7 +5,7 @@
 ![Version](https://img.shields.io/pypi/v/logsanitizer.svg)
 ![License](https://img.shields.io/pypi/l/logsanitizer.svg)
 
-Log processing and sanitizer tool written in Python. Please take into consideration to use with **pypy** to get the best performance. It's working well in **Python 2.7 & 3.3+**.
+Log processing and sanitizer tool written in Python. Please take into consideration to use with **[pypy](https://pypy.org/)** to get the best performance. It's working well in **Python 2.7 & 3.3+**.
 
 This package does the following:
 - Reads a log file line by line.
